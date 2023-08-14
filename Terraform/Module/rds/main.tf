@@ -34,4 +34,5 @@ resource "aws_db_instance" "urotaxi_db" {
   skip_final_snapshot    = true
   tags = {
     "Name" = var.db_name
+  }
 }

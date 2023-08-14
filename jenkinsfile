@@ -23,7 +23,7 @@ pipeline {
          stage ('config db url'){
             sh ''' 
                 dbHost=$(cat dbHosts)
-                sed -i "s|dbhost|$dbHost|g" urotaxi-donfig.yml
+                sed -i "s|dbhost|$dbHost|g" urotaxi-configmap.yml
                 
             '''
         }
