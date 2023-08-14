@@ -24,3 +24,14 @@ variable "eks_cluster_name" {
   type = string
 }
 
+variable "db_server" {
+  type = object({
+    allocated_storage    = string
+    db_name              = string
+    db_username          = string
+    db_password          = string
+    instance_class       = string
+  
+  })
+}
+

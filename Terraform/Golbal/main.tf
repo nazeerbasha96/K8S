@@ -49,14 +49,14 @@ module "eks_role" {
 }
 
 module "db_server" {
-  source = "../Module/rds"
-  vpc_id               = module.k8s_vpc.vpc_id
-  db_cidr           = [module.k8s_vpc.vpc_cidr]
-  allocated_storage    = var.db_server.allocated_storage
-  db_name              = var.db_server.db_name
-  db_username          = var.db_server.db_username
-  db_password          = var.db_server.db_password
-  instance_class       = var.db_server.instance_class
-  subnet_id            = [module.k8s_public_subnet[*].public_id] 
-  
+  source            = "../Module/rds"
+  vpc_id            = module.k8s_vpc.vpc_id
+  db_cidr           = [var.Vpc_block.vpc_cidr]
+  allocated_storage = var.db_server.allocated_storage
+  db_name           = var.db_server.db_name
+  db_username       = var.db_server.db_username
+  db_password       = var.db_server.db_password
+  instance_class    = var.db_server.instance_class
+  subnet_id         = [module.k8s_public_subnet[0].public_id,module.k8s_public_subnet[1].public_id]
+
 }
