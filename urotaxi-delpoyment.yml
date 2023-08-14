@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urotaxi
+spec:
+  replica: 2
+  selector:
+    matchLabels:
+      app: urotaxi
+  template:
+    metadata:
+      labels:
+        app: urotaxi
+    spec:
+      containers:
+      - name: urotaxi
+        image: nazeeerbs/urotaxi
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+          name: tomcatPort
+

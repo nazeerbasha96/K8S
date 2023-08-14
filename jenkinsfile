@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    tools {
+        maven 'mvn'
+       
+    }
+    stages {
+        stage ('Clone Code') {
+            steps {
+                git url: "https://github.com/nazeerbasha96/K8S.git" , branch: "master"
+            }
+        }
+        stage ('Create a k8s cluster' ){
+            steps{
+                sh '''
+                    terraform -chdir=Terraform/Golbal/terraform init
+                     terraform -chdir=Terraform/Golbal/terraform plan
+                    terraform -chdir=Terraform/Golbal/terraform apply --auto-aprove
+                    terraform -chdir=Terraform/Golbal/terraform output  "db_address" > dbHosts
+                '''
+            }
+        }
+         stage ('config db url'){
+            sh ''' 
+                dbHost=$(cat dbHosts)
+                sed -i "s|dbhost|$dbHost|g" urotaxi-donfig.yml
+                
+            '''
+        }
+        stage ('build code'){
+            steps {
+                sh ' mvn  clean verify'
+            }
+        }
+        stage('bulid Image'){
+            steps {
+                echo"building the docker image"
+                sh "docker build -t urotaxi ."
+            }
+        }
+        stage ('Push Image'){
+            steps {
+                withCredentials([usernamePassword(credentialsId:"dockerhub",passwordVariable:"dockerhubpass",usernameVariable:"dockerhubuser")]){
+                sh "docker image tag urotaxi ${env.dockerhubuser}/urptaxi:latest"
+                sh "docker login -u ${env.dockerhubuser} -p ${env.dockerhubpass}" 
+                sh "docker push ${env.dockerhubuser}/urotaxi:latest"
+
+                }
+                
+            }
+        }
+    }
+}
