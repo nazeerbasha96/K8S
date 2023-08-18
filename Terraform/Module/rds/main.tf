@@ -1,7 +1,7 @@
-resource "aws_security_group" "Db_sg" {
+resource "aws_security_group" "db_sg" {
   vpc_id = var.vpc_id
-  ingress = {
-    cidr_block = var.db_cidr
+  ingress  {
+    cidr_blocks = var.db_cidr
     from_port  = 3306
     to_port    = 3306
     protocol   = "tcp"
@@ -16,7 +16,7 @@ resource "aws_security_group" "Db_sg" {
 
 }
 resource "aws_db_subnet_group" "urotaxi_db" {
-  subnet_ids = var.subnet_ids
+  subnet_ids = var.subnet_id
   tags = {
     "Name" = "Db_subnet_group"
   }

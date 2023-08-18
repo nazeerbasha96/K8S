@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'mvn'
+        terraform '30802'
        
     }
     stages {
@@ -14,18 +15,20 @@ pipeline {
             steps{
                 sh '''
                     terraform -chdir=Terraform/Golbal/terraform init
-                     terraform -chdir=Terraform/Golbal/terraform plan
+                    terraform -chdir=Terraform/Golbal/terraform plan
                     terraform -chdir=Terraform/Golbal/terraform apply --auto-aprove
                     terraform -chdir=Terraform/Golbal/terraform output  "db_address" > dbHosts
                 '''
             }
         }
          stage ('config db url'){
-            sh ''' 
-                dbHost=$(cat dbHosts)
-                sed -i "s|dbhost|$dbHost|g" urotaxi-configmap.yml
-                
-            '''
+            steps{
+                sh ''' 
+                    dbHost=$(cat dbHosts)
+                    sed -i "s|dbhost|$dbHost|g" urotaxi-configmap.yml
+                    mysql -uroot -pwelcome#123 -h $(cat dbHosts) < ../src/main/db/urotaxidb.sql
+                '''
+            }
         }
         stage ('build code'){
             steps {
@@ -44,7 +47,6 @@ pipeline {
                 sh "docker image tag urotaxi ${env.dockerhubuser}/urptaxi:latest"
                 sh "docker login -u ${env.dockerhubuser} -p ${env.dockerhubpass}" 
                 sh "docker push ${env.dockerhubuser}/urotaxi:latest"
-
                 }
                 
             }
