@@ -12,3 +12,6 @@ output "db_address" {
   value = module.db_server.db_address
   
 }
+output "db_endpoint" {
+  value = module.db_server.db_endpoint
+}

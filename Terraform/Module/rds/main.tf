@@ -2,9 +2,10 @@ resource "aws_security_group" "db_sg" {
   vpc_id = var.vpc_id
   ingress  {
     cidr_blocks = var.db_cidr
-    from_port  = 3306
-    to_port    = 3306
+    from_port  = "3306"
+    to_port    = "3306"
     protocol   = "tcp"
+    cidr_block= ["10.0.0.0/16"]
 
   }
   egress {
