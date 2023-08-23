@@ -5,7 +5,7 @@ resource "aws_security_group" "db_sg" {
     from_port  = "3306"
     to_port    = "3306"
     protocol   = "tcp"
-    cidr_block= ["10.0.0.0/16"]
+    # cidr_block= ["10.0.0.0/16"]
 
   }
   egress {
