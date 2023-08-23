@@ -1,7 +1,6 @@
 #!/bin/bash
-set -e
-nohup $TOMCAT_HOME/bin/startup.sh &
-exec $@
+$TOMCAT_HOME/bin/startup.sh 
+tail -f /dev/null
 # $1 is 1st parameter
 #$# how many parameter are passed to shellscript
 #$@ all parameter passed to shellscript 
